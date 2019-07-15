@@ -1,0 +1,34 @@
+gst-launch-0.10 -v v4l2src device=/dev/video1 ! video/x-raw-yuv,width=1280,height=960,framerate=10/1 ! jpegenc ! multipartmux! tcpserversink port=3001
+
+1280x960 -> length of string 1843200
+
+gst-launch-0.10 -v v4l2src device=/dev/video1 ! video/x-raw-rgb,width=1280,height=960,framerate=10/1 ! jpegenc ! multipartmux! tcpserversink port=3001
+
+1280x960 -> length of string 3686400
+
+___________________________________________________________________________________________________
+### NAO
+## TCP -> Server
+gst-launch-0.10 -v v4l2src device=/dev/video1 ! video/x-raw-rgb,width=1280,height=960,framerate=10/1 ! jpegenc ! multipartmux! tcpserversink port=3001
+
+
+### MACHINE
+##### Replace appsink by autovideosink
+## TCP -> Client
+tcpclientsrc host=192.168.0.57 port=3001 ! multipartdemux ! jpegdec ! appsink name=sink
+
+___________________________________________________________________________________________________
+
+
+gst-launch-0.10 v4l2src device=/dev/video1 ! video/x-raw-yuv,width=320,height=240,framerate=25/1 !  x264enc tune=zerolatency byte-stream=true bitrate=4096 speed_preset=superfast ! h264parse ! rtph264pay pt=96 ! udpsink host=192.168.0.86 port=5000
+
+gst-launch-1.0 -v udpsrc port=5000 ! application/x-rtp,clock-rate=90000,payload=96 ! rtph264depay ! h264parse ! avdec_h264  ! autovideosink
+
+udpsrc port=5000 ! application/x-rtp,clock-rate=90000,payload=96 ! rtph264depay ! h264parse ! avdec_h264  ! appsink name=sink
+
+___________________________________________________________________________________________________
+
+
+gst-launch-0.10 v4l2src device=/dev/video1 ! video/x-raw-yuv,width=1280,height=960 ! jpegenc ! rtpjpegpay  ! udpsink host=192.168.0.86 port=5000
+
+gst-launch-1.0 udpsrc port=5000 ! application/x-rtp, encoding-name=JPEG,payload=26 ! rtpjpegdepay ! jpegdec ! autovideosink
