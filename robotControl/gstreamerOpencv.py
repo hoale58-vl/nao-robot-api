@@ -9,10 +9,10 @@ import time
 from utils import gst_to_opencv
 
 class NaoGstreamer(object):
-	def __init__(self,  websocket_client, face_detect=None):
+	def __init__(self,  face_detect=None):
 		super(NaoGstreamer, self).__init__()
 		Gst.init(None)
-		self.websocket_client = websocket_client
+		self.websocket_client = None
 		CLI = ("udpsrc port={} ! application/x-rtp, encoding-name=JPEG,payload=26 ! rtpjpegdepay ! jpegdec ! appsink name=sink").format(Const.GSPORT)
 		self.pipeline = Gst.parse_launch(CLI)
 		self.sink = self.setupSink()
@@ -55,7 +55,8 @@ class NaoGstreamer(object):
 	def greetingHuman(self):
 		if self.last_greeting_time + Const.TIMEOUT_GREETING_PERSON < time.time():
 			try:
-				websocket_client.sendMessage(command)
+				if self.websocket_client is not None:
+					self.websocket_client.sendMessage("speak::::vi::::event/welcome.mp3")
 				self.faceDetected = True
 				self.last_greeting_time = time.time()
 			except Exception as e:
@@ -64,40 +65,46 @@ class NaoGstreamer(object):
 				print(fname, exc_tb.tb_lineno, e)
 
 	def detectFaceThread(self):
-		while self.running:
-			if self.image_arr is not None and self.face_detect:
-				try:
-					faces, landmarks = self.face_detect.detect(self.image_arr)
-					if faces:
-						print('Face detected')
-						self.greetingHuman()
-					else:
-						print('No Face')
-						self.faceDetected = False
-				except Exception as e:
-					exc_type, exc_obj, exc_tb = sys.exc_info()
-					fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-					print(fname, exc_tb.tb_lineno, e)
+		while True:
+			if self.running:
+				if self.image_arr is not None and self.face_detect:
+					try:
+						faces, landmarks = self.face_detect.detect(self.image_arr)
+						if faces.shape[0]:
+							print('Face detected')
+							if Const.SHOW_SCREEN:
+								self.face_detect.draw_rect(self.image_arr, faces)
+							self.greetingHuman()
+						else:
+							self.face_detect.draw_rect(self.image_arr, None)
+							print('No Face')
+							self.faceDetected = False
+					except Exception as e:
+						exc_type, exc_obj, exc_tb = sys.exc_info()
+						fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+						print(fname, exc_tb.tb_lineno, e)
 
 	def play(self):
-		self.running = True
+		self.running = False
 		thread.start_new_thread(self.detectFaceThread, ())
-		while self.running:
-			if self.image_arr is not None:
-				try:
-					pass
-				except Exception as e:
-					exc_type, exc_obj, exc_tb = sys.exc_info()
-					fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-					print(fname, exc_tb.tb_lineno, e)
+		while True:
+			if self.running:
+				if self.image_arr is not None:
+					try:
+						pass
+					except Exception as e:
+						exc_type, exc_obj, exc_tb = sys.exc_info()
+						fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+						print(fname, exc_tb.tb_lineno, e)
 
-			message = self.bus.timed_pop_filtered(10000, Gst.MessageType.ANY)
-			self.handleMessage(message)
+				message = self.bus.timed_pop_filtered(10000, Gst.MessageType.ANY)
+				self.handleMessage(message)
 
 	def stopPlaying(self):
 		try:
 			self.running = False
-			self.pipeline.set_state(Gst.State.NULL)
+			# self.pipeline.set_state(Gst.State.NULL)
+			self.face_detect.disconnect()
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

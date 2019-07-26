@@ -17,7 +17,6 @@ class FaceDetect:
 		self.scales = scales
 
 	def get_scales(self, frame):
-		print("Img shape: ", frame.shape)
 		im_shape = frame.shape
 		target_size = self.scales[0]
 		max_size = self.scales[1]
@@ -28,7 +27,6 @@ class FaceDetect:
 		# prevent bigger axis from being more than max_size:
 		if np.round(im_scale * im_size_max) > max_size:
 			im_scale = float(max_size) / float(im_size_max)
-		print("Img scale: ", frame.shape)
 		scales = [im_scale]
 		return scales
 
@@ -41,11 +39,15 @@ class FaceDetect:
 		if faces is not None:
 			print('Find', faces.shape[0], 'faces')
 			for i in range(faces.shape[0]):
-				# print('Score', faces[i][4])
 				box = faces[i].astype(np.int)
 				color = (0,0,255)
 				cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), color, 2)
+		cv2.imshow('FaceDetect', frame)
+		cv2.waitKey(1)
 		return frame
+
+	def disconnect(self):
+		cv2.destroyAllWindows()
 
 def test():
 	gpuid = -1 # or -1 -> CPU

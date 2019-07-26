@@ -1,5 +1,7 @@
-import sys
-sys.path.append("../insightface/src/common")
+import sys, os
+PWD = os.path.dirname(os.path.realpath(__file__))
+print(os.path.join(PWD, "../insightface/src/common"))
+sys.path.append(os.path.join(PWD, "../insightface/src/common"))
 import face_preprocess
 import cv2
 import sklearn
@@ -8,7 +10,7 @@ import mxnet as mx
 
 
 class RecognitionModel:
-	def __init__(self, gpuid, weight_path, threshold = 0.5, agegender = False):
+	def __init__(self, gpuid, weight_path=os.path.join(PWD, '../model/ageGender/model'), threshold = 0.5, agegender = True):
 		image_size = (112,112)
 		ctx = mx.gpu(gpuid)
 		if not agegender:
@@ -86,15 +88,14 @@ def test_recog():
 
 def test_age_gender():
 	gpuid = 0 # -> GPU or -1 -> CPU
-	weight_path = './model-agegender'
-	agegender = RecognitionModel(gpuid=gpuid, weigh t_path=weight_path, agegender = True)
+	agegender = RecognitionModel(gpuid=gpuid)
 
 	face_num = 0
-	img = cv2.imread('t2.jpg')
+	img = cv2.imread(os.path.join(PWD, '../test/test.jpg'))
 	align = agegender.preprocess(img, faces[face_num], landmarks[face_num])
 	gender, age = agegender.get_ga(align)
 	print(gender, age)
 
 	crop_img = img[int(faces[face_num][1]):int(faces[face_num][3]), int(faces[face_num][0]):int(faces[face_num][2])]
-	filename = './age_gender.jpg'
+	filename = os.path.join(PWD, '../test/age_gender.jpg')
 	cv2.imwrite(filename, crop_img)

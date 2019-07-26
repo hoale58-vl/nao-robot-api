@@ -37,7 +37,7 @@ class CustomSpeechRecognition(sr.Recognizer):
         self.ws_close = False
 
 
-    def listen_from_bytes(self, buffer, phrase_time_limit=None):
+    def listen_from_bytes(self, buffer, phrase_time_limit):
         try:
             # buffer = ''.join([(chr(0) if ord(x) < 250 else x) for x in buffer])
             # stream.write(buffer)

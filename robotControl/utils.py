@@ -12,7 +12,7 @@ def gst_to_opencv(sample):
 		height = height * 3 / 2
 
 		arr = np.frombuffer(buf.extract_dup(0, buf.get_size()), dtype=np.uint8)
-		cv_mat = arr.reshape((height, width, -1))
+		cv_mat = arr.reshape((int(height), int(width), -1))
 		rgb = cv2.cvtColor(cv_mat, cv2.COLOR_YUV420P2RGB)
 		return rgb
 	except Exception as e:

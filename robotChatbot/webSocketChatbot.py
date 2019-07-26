@@ -10,6 +10,7 @@ import custom_speech_recog as sr
 import Const
 import collections
 from utils import BotApi
+from websocket import create_connection
 
 class StreamAudio(WebSocket):
 	def sttGoogleApi(self, audio):
@@ -17,14 +18,16 @@ class StreamAudio(WebSocket):
 			data = self.recognizer.recognize_google_cloud(audio, credentials_json=Const.GOOGLE_CLOUD_SPEECH_CREDENTIALS, language='vi-VI')
 			data = data.lower().strip()
 			print('[User] ' + data)
-		except sr.sr.UnknownValueError:
+		except sr.sr.UnknownValueError as e:
 			data = "i can't hear!"
-			print('[Bot] ' + data)
+			print('[Bot] ' + data, e)
 			return
 		except sr.sr.RequestError as e:
 			data = "too noisy"
 			print("Could not request results from Google Speech Recognition service; {0}".format(e))
-			sendCommand("speak::::vi::::event/gstt_error.mp3")
+			# wsControl = create_connection(Const.WEBSOCKET_CONTROL_URL)
+			# wsControl.send("speak::::vi::::event/gstt_error.mp3")
+			# wsControl.close()
 			return
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -33,8 +36,13 @@ class StreamAudio(WebSocket):
 			return
 
 		try:
-			botRes = askBot(data)
-			print('[Bot] ' + botRes)
+			botRes, lang = self.botApi.askBot(data)
+			print(botRes, lang)
+			if lang is not None:
+				print("[Bot] speak::::" + lang + "::::" + botRes)
+				# wsControl = create_connection(Const.WEBSOCKET_CONTROL_URL)
+				# wsControl.send("speak::::" + lang + "::::" + botRes)
+				# wsControl.close()
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -57,33 +65,23 @@ class StreamAudio(WebSocket):
 
 	def handleMessage(self):
 		try:
-			for client in clients:
-				if client == self.id:
-					# Timeout - Did receive data from client
-					self.last_message_at = time.time()
-					audio = self.recognizer.listen_from_bytes(bytes(self.data), 7)
-					if self.recognizer.stop_speaking:
-						print('Stop Speaking - By voice')
-					if audio is not None and type(audio) is not bool:
-						thread.start_new_thread( self.sttGoogleApi, (audio, ) )
+			# Timeout - Did receive data from client
+			self.last_message_at = time.time()
+			audio = self.recognizer.listen_from_bytes(bytes(self.data), 15)
+			if self.recognizer.stop_speaking:
+				print('Stop Speaking - By voice')
+			if audio is not None and type(audio) is not bool:
+				thread.start_new_thread( self.sttGoogleApi, (audio, ) )
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			log.errorLog(fname, exc_tb.tb_lineno, e)
+			print(fname, exc_tb.tb_lineno, e)
 
 	def handleConnected(self):
 		try:
 			self.connected = True
 			print(str(self.address) + ' connected')
-			id = 1
-			while (True):
-				if id in clients:
-					id+=1
-				else:
-					self.id = id
-					clients.append(self.id)
-					break
-			self.botApi = BotApi(self.id)
+			self.botApi = BotApi(Const.chatbot_id)
 
 			self.recognizer = sr.CustomSpeechRecognition()
 			self.recognizer.pause_threshold = Const.pause_threshold # length of silence (in seconds) that will register as the end of a phrase
