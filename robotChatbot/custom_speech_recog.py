@@ -7,7 +7,7 @@ import collections
 import audioop
 import wave
 import time
-
+import Const
 import numpy as np
 import sys, os
 
@@ -17,6 +17,15 @@ energy_threshold = 300
 STOP_LISTENING_TIMEOUT = 15
 dynamic_energy_adjustment_damping = 0.15
 dynamic_energy_ratio = 1.5
+
+# import pyaudio
+# p = pyaudio.PyAudio()
+# stream = p.open(format =
+#     p.get_format_from_width(2),
+#     channels = 1,
+#     rate = Const.RATE,
+#     output = True
+# )
 
 class CustomSpeechRecognition(sr.Recognizer):
     def custom_init(self, chunk, sample_rate):
@@ -29,7 +38,7 @@ class CustomSpeechRecognition(sr.Recognizer):
 
         assert self.pause_threshold >= self.non_speaking_duration >= 0
         self.seconds_per_buffer = float(self.chunk) / self.sample_rate
-        self.pause_buffer_count = int(math.ceil(self.pause_threshold / self.seconds_per_buffer))  # number of buffers of non-speaking audio during a phrase, before the phrase should be considered complete
+        self.pause_buffer_count = int(math.ceil(self.pause_threshold / self.seconds_per_buffer)) + 2 # number of buffers of non-speaking audio during a phrase, before the phrase should be considered complete
         self.phrase_buffer_count = int(math.ceil(self.phrase_threshold / self.seconds_per_buffer))  # minimum number of buffers of speaking audio before we consider the speaking audio a phrase
         self.non_speaking_buffer_count = int(math.ceil(self.non_speaking_duration / self.seconds_per_buffer))  # maximum number of buffers of non-speaking audio to retain before and after a phrase
         self.energy_threshold = None
@@ -39,7 +48,7 @@ class CustomSpeechRecognition(sr.Recognizer):
 
     def listen_from_bytes(self, buffer, phrase_time_limit):
         try:
-            # buffer = ''.join([(chr(0) if ord(x) < 250 else x) for x in buffer])
+            # buffer = b''.join([(chr(0) if x < 250 else x) for x in buffer])
             # stream.write(buffer)
             # read audio input for phrases until there is a phrase that is long enough
             if not self.stop_speaking:

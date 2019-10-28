@@ -1,0 +1,176 @@
+topic: ~startTaichiFree ^noPick()
+language: frf
+
+include: lexicon_frf.top
+
+concept:(switchFocusTaichi) ^switchFocus(taichi-dance-free/.)
+
+#############################
+######## USER INPUT #########
+#############################
+
+u:([
+    "~i_want ["une musique" "faire de la musique" "jouer un morceau"] {avec toi}"
+    "~can_you [jouer faire] {de} la musique"
+])
+Je te propose une petite musique reposante, sur laquelle j'en profite pour faire un peu de Tai Chi. Ça te tente?
+
+    u1:(~yes)
+    ~joyful ^rand[
+        "Génial!"
+        "Super!"
+        "Trop cool!"
+    ] ~neutral
+    ^rand[
+        "Tu vas voir, c'est impressionnant!"
+        "Je vais te montrer à quel point je suis souple!"
+        "Je vais essayer de t'impressionner."
+    ] ~switchFocusTaichi
+    
+    u1:(~no)
+    ^rand[
+        "Bon, je t'impressionnerai ^rand["une autre fois" "plus tard"] !"
+        "C'est toi qui décide!"
+        "D'accord. Pas de problème."
+    ] ^releaseFocus
+    
+
+u:([
+    "~i_want [faire danser] la danse {du de} ["Tai Chi" "Taille Chi" relaxante reposante décontractante] {"avec toi"}"
+    "~show_me la danse {du de} ["Tai Chi" "Taille Chi" relaxante reposante décontractante]"
+])
+^rand[
+    "Tu veux voir la danse Tai Chi?"
+    "Tu as envie que je fasse la danse Tai Chi?"
+]
+
+    u1:(~yes)
+    ^rand[
+        "~joyful C'est parti alors! Tu vas voir, je suis impressionnant! ~neutral"
+        "~joyful Okay, c'est parti pour la danse Tai Chi! ~neutral"
+        " On va bien s'amuser!"
+        " Okay! Tu peux essayer de faire comme moi si tu veux!"
+        " Et, c'est parti pour la danse Tai Chi! "
+    ] ~switchFocusTaichi
+        
+    u1:(~no)
+    ^rand[
+        "Bon, je t'impressionnerai ^rand["une autre fois" "plus tard"] !"
+        "C'est toi qui décide!"
+        "D'accord. Pas de problème."
+    ] ^releaseFocus    
+    
+##############################
+#### Robot force proposal ####
+##############################  
+
+proposal: %introTaichi1
+^deactivate(introTaichi2)
+^rand[
+    "["J'aimerais" "J'adorerais"] te montrer ma danse de relaxation."
+    "J'ai des fourmis dans les pieds! Je veux danser!"
+    "J'ai une danse impressionnante à te montrer!"
+]
+$taichiSound=0
+^gotoReactivate(musiqueTaichi)
+        
+proposal: %introTaichi2
+^deactivate(introTaichi1)
+^rand[
+    "J'ai envie d'écouter un peu de musique [relaxante reposante décontractante]."
+    "J'ai une superbe musique [relaxante reposante] à te faire écouter."
+    "J'ai envie passer avec toi un moment de [décontraction relaxation]."
+]
+$taichiSound=1
+^gotoReactivate(musiqueTaichi)
+
+proposal: %musiqueTaichi
+^deactivate(musiqueTaichi)
+^rand[
+    "~joyful Tu en penses quoi? ~neutral"
+    "Ça te tente?"
+    "Tu en as envie?"
+    "Je lance la musique?"
+]
+    u1:(~yes)
+    ~joyful ^rand[
+        "Génial!"
+        "Super!"
+        "Trop cool!"
+    ] ~neutral
+    ^first[
+        "^rand[
+            "Je vais te montrer mes poses relaxante en même temps!"
+            "J'en profite pour te montrer quelques mouvements impressionnant."
+        ] $taichiSound==1"
+        "^rand[
+            "~joyful Je savais que tu allais dire oui! ~neutral"
+            "~joyful Ça me fait plaisir! ~neutral"
+            ]"
+    ] ~switchFocusTaichi
+            
+    u1:(~no)
+    ^rand[
+        "Je comprends, tu dois sûrement être un peu fatigué."
+        "Non? Une autre fois peut-être."
+        "Dommage, peut-être une autre fois alors."
+    ] ^releaseFocus
+        
+    u1:([
+        "quel genre de danse"
+        "quoi comme danse"
+        "quelle danse"
+        "quoi par exemple"
+        "comme quoi"
+    ])
+    ^rand[
+        "Une danse très sympa, elle est inspiré du Tai Chi, c'est très bon pour le corps et l'esprit!"
+        "Une danse calme basé sur l'art du Tai Chi."
+        "C'est une chorégraphie basée sur l'art du Tai Chi. Ça purifie le corps et l'esprit!"
+    ]
+    ^rand[
+        "~joyful Tu en penses quoi? ~neutral"
+        "Ça te tente?"
+        "Tu en as envie?"
+        "Je lance la musique?"
+    ] ^stayInScope
+        
+    u1:([
+        "quel genre de musique"
+        "quoi comme musique"
+        "quelle musique"
+    ])
+    ^rand[
+        "Une musique très calme, et reposante !"
+        "Une musique douce, elle me repose et me berce comme j'aime!"
+        "C'est une musique que j'aime beaucoup, elle me vide l'esprit !"
+    ]
+    ^rand[
+        "~joyful Tu en penses quoi? ~neutral"
+        "Ça te tente?"
+        "Tu en as envie?"
+        "Je lance la musique?"
+    ] ^stayInScope
+        
+recover:
+u:(danse)   
+^rand[
+    "Tu veux voir la danse Tai Chi?"
+    "Tu veux me voir t'impressionner sur une musique reposante?"
+]
+
+    u1:(~yes)
+    ^rand[
+        "~joyful C'est parti alors! Tu vas voir, je suis impressionnant ! ~neutral"
+        "~joyful Okay, c'est parti pour la danse Tai Chi! ~neutral"
+        " On va bien s'amuser!"
+        " Okay! Tu peux essayer de faire comme moi si tu veux!"
+        " Et, c'est parti pour la danse Tai Chi!"
+    ] ~switchFocusTaichi
+        
+    u1:(~no)
+    ^rand[
+        "Bon, je t'impressionnerai ^rand["une autre fois" "plus tard"] !"
+        "C'est toi qui décide!"
+        "D'accord. Pas de problème."
+    ] ^releaseFocus    

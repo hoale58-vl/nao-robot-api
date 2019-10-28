@@ -1,7 +1,6 @@
 import cv2
 import sys, os
 PWD = os.path.dirname(os.path.realpath(__file__))
-print(os.path.join(PWD, "../insightface/RetinaFace"))
 sys.path.append(os.path.join(PWD, "../insightface/RetinaFace"))
 import numpy as np
 import datetime
@@ -10,7 +9,7 @@ import glob
 from retinaface import RetinaFace
 
 class FaceDetect:
-	def __init__(self, thresh= 0.8, scales = [1024, 1980], gpuid=0, network='net3',  weight_path=os.path.join(PWD, '../model/mobilenet/mnet.25')):
+	def __init__(self, thresh= 0.85, scales = [480, 640], gpuid=0, network='net3',  weight_path=os.path.join(PWD, '../model/mobilenet/mnet.25')):
 		ctx_id = 0
 		self.thresh = thresh
 		self.detector = RetinaFace(weight_path, ctx_id, gpuid, network)
@@ -37,13 +36,11 @@ class FaceDetect:
 		
 	def draw_rect(self, frame, faces):
 		if faces is not None:
-			print('Find', faces.shape[0], 'faces')
+			# print('Find', faces.shape[0], 'faces')
 			for i in range(faces.shape[0]):
 				box = faces[i].astype(np.int)
 				color = (0,0,255)
 				cv2.rectangle(frame, (box[0], box[1]), (box[2], box[3]), color, 2)
-		cv2.imshow('FaceDetect', frame)
-		cv2.waitKey(1)
 		return frame
 
 	def disconnect(self):

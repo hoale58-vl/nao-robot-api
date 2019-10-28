@@ -11,11 +11,30 @@ import Const
 import collections
 from utils import BotApi
 from websocket import create_connection
+from watchdog.observers import Observer
+from watchdog.events import PatternMatchingEventHandler
+import json
+
+lang_code = {
+	"en": "en-US",
+	"vi": "vi-VN",
+	"ja" : "ja-JP"
+}
+
+def getLangFromConfig():
+	configFile = os.path.join(Const.configPath, "config.json")
+	with open(configFile, "r+") as jsonFile:
+		data = json.load(jsonFile)
+		print(data['lang'])
+		return data["lang"]
 
 class StreamAudio(WebSocket):
+	def on_modified(self, event):
+		self.configLang = lang_code[getLangFromConfig()]
+
 	def sttGoogleApi(self, audio):
 		try:
-			data = self.recognizer.recognize_google_cloud(audio, credentials_json=Const.GOOGLE_CLOUD_SPEECH_CREDENTIALS, language='vi-VI')
+			data = self.recognizer.recognize_google_cloud(audio, credentials_json=Const.GOOGLE_CLOUD_SPEECH_CREDENTIALS, language=self.configLang)
 			data = data.lower().strip()
 			print('[User] ' + data)
 		except sr.sr.UnknownValueError as e:
@@ -36,13 +55,11 @@ class StreamAudio(WebSocket):
 			return
 
 		try:
-			botRes, lang = self.botApi.askBot(data)
-			print(botRes, lang)
-			if lang is not None:
-				print("[Bot] speak::::" + lang + "::::" + botRes)
-				# wsControl = create_connection(Const.WEBSOCKET_CONTROL_URL)
-				# wsControl.send("speak::::" + lang + "::::" + botRes)
-				# wsControl.close()
+			botRes = self.botApi.askBot(data)
+			if botRes is not None:
+				print('[Bot] ' + botRes)
+			else:
+				print('[Bot] None')
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -79,6 +96,15 @@ class StreamAudio(WebSocket):
 
 	def handleConnected(self):
 		try:
+			self.configLang = lang_code[getLangFromConfig()]
+			event_handler = PatternMatchingEventHandler(patterns=["*.json"],
+									ignore_patterns=[],
+									ignore_directories=True)
+			event_handler.on_modified = self.on_modified
+			self.observer = Observer()
+			self.observer.schedule(event_handler, path=Const.configPath, recursive=False)
+			self.observer.start()
+
 			self.connected = True
 			print(str(self.address) + ' connected')
 			self.botApi = BotApi(Const.chatbot_id)
@@ -105,6 +131,8 @@ class StreamAudio(WebSocket):
 		self.connected = False
 		clients.remove(self.id)
 		print(str(self.address) + ' closed')
+		self.observer.stop()
+		self.observer.join()
 
 server = SimpleWebSocketServer('', Const.ROBOT_CHATBOT_WEBSOCKET_PORT, StreamAudio)
 server.serveforever()

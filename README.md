@@ -87,3 +87,13 @@ cd /home/black/workSpace/nlu/gumi_project/serverSource/robotChatbot && nohup /ho
 # Script stop server
 #! /bin/bash
 killall /home/black/anaconda3/envs/rasa_chatbot/bin/python
+
+# Loop back audio
+## NAO
+pactl load-module module-rtp-send source=alsa_output.0.output-speakers.monitor destination_ip=<server_ip>
+## Server
+pactl load-module module-rtp-recv sap_address=<server_ip>
+### List loaded module
+pactl list short
+### Unload loaded module
+pactl unload <index>

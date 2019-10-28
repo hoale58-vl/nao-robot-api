@@ -1,0 +1,169 @@
+topic: ~startTaichiFree ^noPick()
+language: enu
+
+include: lexicon_enu.top
+
+concept:(switchFocusTaichi) ^switchFocus(taichi-dance-free/.)
+
+#############################
+######## USER INPUT #########
+#############################
+
+u:([
+    "~i_want {you} to play {some} music"
+    "~can_you play {some} music"
+])
+I suggest some relaxing music, on which I could do some Tai Chi, what do you think?
+
+    u1:(~yes)
+    ~joyful [
+        Great
+        Cool
+        Super
+    ] ! ~neutral
+    ^rand[
+        "~joyful You're going to see something cool! ~neutral"
+        "I'm sure you will love it!"
+        "You'll see how flexible I can be!"
+        ] ~switchFocusTaichi
+    
+    u1:(~no)
+    ^rand[
+        "Okay, I'll impress you later!"
+        "You decide!"
+        "Okay, no problem."
+    ] ^releaseFocus 
+       
+
+u:([
+    "~can_you [do dance] the ["Tai Chi" relaxing calm] dance"
+    "~show_me the ["Tai Chi" relaxing calm] dance"
+])
+^rand[
+    "Do you want to see the ^rand["Tai Chi" relaxing calm] dance?"
+    "Can I impress you with the ^rand["Tai Chi" relaxing calm] dance?"
+]
+
+    u1:(~yes)
+    ~joyful [
+        Great
+        Cool
+        Super
+    ] ! ~neutral
+    ^rand[
+        "~joyful You're going to see something cool! ~neutral"
+        "I'm sure you will love it!"
+        "You'll see how flexible I can be!"
+        ] ~switchFocusTaichi
+    
+    u1:(~no)
+    ^rand[
+        "Okay, I'll impress you later!"
+        "You decide!"
+        "Okay, no problem."
+    ] ^releaseFocus 
+    
+##############################
+#### Robot force proposal ####
+##############################  
+
+proposal:%introTaichi1
+^deactivate(introTaichi2)
+^rand[
+    "I'd like to show you my relaxing dance."
+    "My feet are itching, I want to dance!"
+    "I have an impressive dance to show you!"
+]
+$taichiSound=0
+^gotoReactivate(musiqueTaichi)
+        
+proposal:%introTaichi2
+^deactivate(introTaichi1)
+^rand[
+    "I feel like listening to some [relaxing calm] music."
+    "I have a cool [relaxing calm] music for you."
+    "I'd like to relax."
+]
+$taichiSound=1
+^gotoReactivate(musiqueTaichi)
+
+proposal: %musiqueTaichi
+^deactivate(musiqueTaichi)
+^rand[
+    "What do you think?"
+    "Do you feel like it?"
+    "Is that okay with you?"
+    "Can I play my music?"
+]
+
+    u1:(~yes)
+    ~joyful [
+        Great
+        Cool
+        Super
+    ] ! ~neutral
+    ^first[
+        "^rand[
+                "I'll show you my relaxing poses!"
+                "I'll take the opportunity to show you some impressive moves!"
+            ] $taichiSound==1"
+        "~joyful ^rand[
+            "I knew you'd say yes!"
+            "I'm so happy! "
+        ] ~neutral"
+    ] ~switchFocusTaichi
+            
+    u1:(~no)
+    ^rand[
+        "Okay, I'll impress you later!"
+        "You decide!"
+        "Okay, no problem."
+    ] ^releaseFocus 
+        
+    u1:(what {"kind of"} dance)
+    ^rand[
+        "A very cool dance, it's inspired from Tai Chi, very good for both your body and your soul!"
+        "A calm dance based on the Tai Chi art."
+        "It's a choreography based on the Tai Chi art, it purifies both your body and your soul!"
+    ]
+    ^rand[
+        "What do you think?"
+        "Do you feel like it?"
+        "Is that okay with you?"
+        "Can I play my music?"
+    ]
+        
+    u1:(what {"kind of"} music)
+    ^rand[
+        "A very calm and relaxing music!"
+        "A soft music, soothing and relaxing, just what I like!"
+        "It's a music I really like, it clears my mind."
+    ]
+    ^rand[
+        "What do you think?"
+        "Do you feel like it?"
+        "Is that okay with you?"
+        "Can I play my music?"
+    ]
+        
+recover:
+u:(dance)   
+^rand[
+    "Do you want to see the ^rand["Tai Chi" relaxing calm] dance?"
+    "Can I impress you with the ^rand["Tai Chi" relaxing calm] dance?"
+]
+
+    u1:(~yes)
+    ^rand[
+        "Let's go! You're going to be impressed!"
+        "Let's do the Tai Chi dance!"
+        "We're going to have fun!"
+        "You can try and reproduce my movements if you want!"
+    ] ~switchFocusTaichi
+        
+    u1:(~no)
+    ^rand[
+        "Okay, I'll impress you later!"
+        "You decide!"
+        "Okay, no problem."
+    ] ^releaseFocus

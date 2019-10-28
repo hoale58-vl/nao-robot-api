@@ -1,6 +1,5 @@
 import sys, os
 PWD = os.path.dirname(os.path.realpath(__file__))
-print(os.path.join(PWD, "../insightface/src/common"))
 sys.path.append(os.path.join(PWD, "../insightface/src/common"))
 import face_preprocess
 import cv2

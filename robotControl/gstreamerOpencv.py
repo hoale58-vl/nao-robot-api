@@ -5,11 +5,23 @@ from gi.repository import Gst
 import Const
 import _thread as thread
 import os
-import time
 from utils import gst_to_opencv
+import cv2
+
+font                                     = cv2.FONT_HERSHEY_SIMPLEX
+bottomLeftCornerOfText = (10,500)
+fontScale                            = 0.75
+fontColor                            = (255,255,255)
+fontColor2                            = (51, 51, 255)
+lineType                             = 2
+gender_label = ['F', 'M']
+namedWindow = "FaceDetect"
+if Const.SHOW_SCREEN:
+	cv2.namedWindow(namedWindow, cv2.WINDOW_NORMAL)
+	cv2.resizeWindow(namedWindow, 1200,900)
 
 class NaoGstreamer(object):
-	def __init__(self,  face_detect=None):
+	def __init__(self,  face_detect=None, agegender=None):
 		super(NaoGstreamer, self).__init__()
 		Gst.init(None)
 		self.websocket_client = None
@@ -21,9 +33,9 @@ class NaoGstreamer(object):
 		self.image_arr = None
 		self.bus = None
 		self.face_detect = face_detect
+		self.agegender = agegender
 
 		self.faceDetected = False
-		self.last_greeting_time = time.time() - Const.TIMEOUT_GREETING_PERSON
 
 	def new_buffer(self, sink, data):
 		sample = self.sink.emit("pull-sample")
@@ -53,16 +65,14 @@ class NaoGstreamer(object):
 			print(fname, exc_tb.tb_lineno, e)
 
 	def greetingHuman(self):
-		if self.last_greeting_time + Const.TIMEOUT_GREETING_PERSON < time.time():
-			try:
-				if self.websocket_client is not None:
-					self.websocket_client.sendMessage("speak::::vi::::event/welcome.mp3")
-				self.faceDetected = True
-				self.last_greeting_time = time.time()
-			except Exception as e:
-				exc_type, exc_obj, exc_tb = sys.exc_info()
-				fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-				print(fname, exc_tb.tb_lineno, e)
+		try:
+			if self.websocket_client is not None:
+				self.websocket_client.sendMessage("face::::detected::::detected")
+			self.faceDetected = True
+		except Exception as e:
+			exc_type, exc_obj, exc_tb = sys.exc_info()
+			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+			print(fname, exc_tb.tb_lineno, e)
 
 	def detectFaceThread(self):
 		while True:
@@ -71,13 +81,29 @@ class NaoGstreamer(object):
 					try:
 						faces, landmarks = self.face_detect.detect(self.image_arr)
 						if faces.shape[0]:
-							print('Face detected')
+							# print('Face detected')
 							if Const.SHOW_SCREEN:
-								self.face_detect.draw_rect(self.image_arr, faces)
+								self.image_arr = self.face_detect.draw_rect(self.image_arr, faces)
+								if self.agegender:
+									for face_num in range(len(faces)):
+										align = self.agegender.preprocess(self.image_arr, faces[face_num], landmarks[face_num])
+										gender, age = self.agegender.get_ga(align)
+										text = gender_label[gender] + ' - ' + str(age)
+										cv2.putText(self.image_arr, text, 
+											(int(faces[face_num][0]), int(faces[face_num][1])), 
+											font, 
+											fontScale,
+											fontColor2,
+											lineType
+										)
+								cv2.imshow(namedWindow, self.image_arr)
+								cv2.waitKey(1)
 							self.greetingHuman()
 						else:
-							self.face_detect.draw_rect(self.image_arr, None)
-							print('No Face')
+							if Const.SHOW_SCREEN:
+								cv2.imshow(namedWindow, self.image_arr)
+								cv2.waitKey(1)
+							# print('No Face')
 							self.faceDetected = False
 					except Exception as e:
 						exc_type, exc_obj, exc_tb = sys.exc_info()

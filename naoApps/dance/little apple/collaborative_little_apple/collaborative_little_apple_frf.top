@@ -1,0 +1,10 @@
+topic: ~collaborative_little_apple()
+language: frf
+
+include:lexicon_frf.top
+
+proposal: J'ai appris une danse pop chinoise très populaire en ce moment, ça s'appelle petite pomme. Est-ce que tu veux la voir ?
+    u1:(~no) soite, mais quel dommage ! ^topicRandom
+    u1:(~yes) ok, laisse moi me préparer ^switchFocus(little-apple-dance/.)
+  
+u:(montre moi la danse de la petite pomme) ok, c'est parti pour du hip hop ! ^switchFocus(little-apple-dance/.)   

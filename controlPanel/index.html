@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Nao Control Panel</title>
+        <link rel="stylesheet" href="https://code.jquery.com/mobile/1.5.0-alpha.1/jquery.mobile-1.5.0-alpha.1.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/controlpanel/css/chatbox.css">
+        <link rel="shortcut icon" type="image/png" href="/controlpanel/favicon.ico"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        
+    </head>
+    <body>
+        <div id="naotalk" data-role="page" data-prev="" data-next="#naoaction">
+            <div data-role="header" data-position='fixed' class="text-center">
+                <h1>~ NAO Talk ~</h1>
+            </div>
+            <div data-role="content">
+                <div class="row m-3">
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-header bg-primary text-white">
+                                    <h4 class="card-title"><b>受付案内</b></h4>
+                                    <p><i>Reception information</i></p>
+                                </div>
+                                <p class="card-text">おはようございまーす。Naoと申します。本日は朝早くからから、JCCH懇親ゴルフ大会にお越しいただきありがとうございまーす。受付はこちらでお願いしまーす。</p>
+                                <button class="btn btn-primary btn-talk">NAO言う</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-header bg-success text-white">
+                                    <h4 class="card-title"><b>朝食案内</b></h4>
+                                    <p><i>Breakfast guide</i></p>
+                                </div>
+                                <p class="card-text">受付が終わったら、レストランで朝ごはんを食べてくださーい。開会式は5時40分からでーす。</p>
+                                <button class="btn btn-success btn-talk">NAO言う</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-header  bg-danger text-white">
+                                    <h4 class="card-title"><b>協賛品受付案内</b></h4>
+                                    <p><i>Supporting product information</i></p>
+                                </div>
+                                <p class="card-text">協賛品をお持ち頂いた皆様、誠にありがとうございます。協賛品は、レストランとロッカーの間のスタッフに預けてくださーい。</p>
+                                <button class="btn btn-danger btn-talk">NAO言う</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="card-header  bg-warning text-white">
+                                    <h4 class="card-title"><b>VATインボイスの案内</b></h4>
+                                    <p><i>VAT invoice information</i></p>
+                                </div>
+                                <p class="card-text">VATインボイスが必要な方は、事前に申請用紙をもらって、記入しておいてくださーい</p>
+                                <button class="btn btn-warning btn-talk">NAO言う</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="m-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="card-header  bg-info text-white">
+                                <h4 class="card-title"><b>チャリティ集金、支払い案内（@キャッシャー）</b></h4>
+                                <p><i>Charity collection, payment guide</i></p>
+                            </div>
+                            <div class="card-body row">
+                                <div class="col">
+                                    <p class="card-text">プレーお疲れさまでしたー。JCCH社会貢献委員会より、チャリティーへのご協力をお願いしていまーす。お釣りの5万ドンはこちらの箱に入れてね。</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">皆様、プレーお疲れさまでした。お待ちの方は、表彰式後のお支払いもできまーす。先にパーティールームに移動してもオーケーです！</p>
+                                </div>
+                                <div class="col">
+                                    <p class="card-text">お支払いが終わりましたら、バックを車に積むと早く帰れるみたいです。ご協力宜しくお願いしまーす。</p>
+                                </div>
+                            </div> 
+                            <button class="btn btn-info btn-talk">NAO言う</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="naoaction" data-role="page" data-prev="#naotalk" data-next="#naoconfig">
+            <div data-role="header" data-position='fixed' class="text-center">
+                <h1>~ Nao Action ~</h1>
+            </div>
+            <div data-role="content">
+                <div class="row m-3">
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-header bg-primary text-white">
+                                    <h4 class="card-title"><b>NAOダンス</b></h4>
+                                    <p><i>NAO's dance</i></p>
+                                </div>
+                                <div class="card-body">
+                                    <form id="dance-form">
+                                        <div class="form-group">
+                                            <label for="dance">Dance:</label>
+                                            <select class="form-control" id="dance">
+                                                <option value="little apple">little apple</option>
+                                                <option value="taichi">taichi</option>
+                                                <option value="evolution">evolution</option>
+                                                <option value="sát_nhân">sát_nhân</option>
+                                                <option value="macarena">macarena</option>
+                                                <option value="gangnam style">gangnam style</option>
+                                                <option value="hãy trao cho anh">hãy trao cho anh</option>
+                                                <option value="chicken dance">chicken dance</option>
+                                                <option value="cavaran">cavaran</option>
+                                                <option value="disco">disco</option>
+                                                <option value="harder better faster stronger">harder better faster stronger</option>
+                                                <option value="tập thể_dục">tập thể_dục</option>
+                                                <option value="angle">angle</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">NAO言う</button>
+                                    </form>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-header bg-danger text-white">
+                                    <h4 class="card-title"><b>NAOの歌</b></h4>
+                                    <p><i>NAO's song</i></p>
+                                </div>
+                                <div class="card-body">
+                                    <form id="song-form">
+                                        <div class="form-group">
+                                            <label for="song">Seclect language:</label>
+                                            <select class="form-control" id="song_lang">
+                                                <option value="ja">Japanese song</option>
+                                                <option value="vi">Vietnamese song</option>
+                                                <option value="en">English song</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="song">Select song:</label>
+                                            <select class="form-control" id="song">
+                                                <option value="歌に形はないけれど">歌に形はないけれど</option>
+                                                <option value="君がくれたもの">君がくれたもの</option>
+                                                <option value="恋愛サーキュレーション">恋愛サーキュレーション</option>
+                                                <option value="テルーの唄">テルーの唄</option>
+                                                <option value="涙の物語">涙の物語</option>
+                                                <option value="さくらあなたに出会えてよかった">さくらあなたに出会えてよかった</option>
+                                                <option value="ひらりひらり">ひらりひらり</option>
+                                                <option value="蛍">蛍</option>
+                                                <option value="さよならの夏">さよならの夏</option>
+                                                <option value="シルエット">シルエット</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-danger">NAO言う</button>
+                                    </form>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="m-3">
+                        <div class="card-body">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="card-title"><b>NAO共通アクション</b></h4>
+                                <p><i>NAO's common action</i></p>
+                            </div>
+                            <div class="card-body row mt-2">
+                                <button type="button" class="btn btn-info col m-2 btn-action" data-action="rest">REST</button>
+                                <button type="button" class="btn btn-secondary col m-2 btn-action" data-action="wake">WAKEUP</button>
+                                <button type="button" class="btn btn-danger col m-2 btn-action" data-action="stop">STOP</button>
+                            </div>
+
+                            <div class="card-body row mt-2">
+                                <button type="button" class="btn btn-info col m-2 btn-mode" data-mode_action="bật" data-mode="giọng_nói">TRACKING ON</button>
+                                <button type="button" class="btn btn-secondary col m-2 btn-mode" data-mode_action="tắt" data-mode="giọng_nói">TRACKING OFF</button>
+                                <button type="button" class="btn btn-info col m-2 btn-mode" data-mode_action="bật" data-mode="micro">MICRO ON</button>
+                                <button type="button" class="btn btn-secondary col m-2 btn-mode" data-mode_action="tắt" data-mode="micro">MICRO OFF</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="m-3">
+                        <div class="card-body">
+                            <div class="card-header bg-warning text-white">
+                                <h4 class="card-title"><b>NAOの講演</b></h4>
+                                <p><i>NAO's talk</i></p>
+                            </div>
+                            <div class="card-body row mt-2">
+                                <div class="form-group col-4">
+                                    <label for="lang">Select Language</label>
+                                    <select class="form-control" id="talkLang">
+                                        <option value="vi">Vietnamese</option>
+                                        <option value="en">English</option>
+                                        <option value="ja">Japanese</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-8">
+                                    <label for="talk-text">Talk text</label>
+                                    <textarea class="form-control" id="talk-text" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" id="btn-talk-text">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="naoconfig" data-role="page" data-prev="#naoaction" data-next="">
+            <div data-role="header" data-position='fixed' class="text-center">
+                <h1>~ Nao Conversation ~</h1>
+            </div>
+            <div data-role="content">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="demo-chatbox">
+                                <div class="msg-box">
+                                    <p id="bot-send"><img width="50" height="50" src="https://www.sccpre.cat/mypng/detail/169-1694299_this-free-icons-png-design-of-head-of.png">助けが必要ですか？</p>
+                                </div>
+                            </div>
+                            <form id="chat-with-robot">
+                                <div class="form-group">
+                                    <label for="textarea-chatbot"><b>You:</b></label>
+                                    <textarea id="textarea-chatbot"></textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-2">
+                                        <span id="btn-listing" class="btn btn-primary"  tabindex="0"><i class="fa fa-microphone" aria-hidden="true"></i></span>
+                                    </div>
+                                    <div class="col-10">
+                                        <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane " aria-hidden="true"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="col-4 border-slibar">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary" id="btn-speechrecog">Speech Recognition</button>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lang">Select Language</label>
+                                <select class="form-control" id="chatBoxLang">
+                                    <option value="vi">Vietnamese</option>
+                                    <option value="en">English</option>
+                                    <option value="ja">Japanese</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <div class="form-group">
+                                    <label for="volume">Adjust NAO volume</label>
+                                    <input type="range" class="form-control-range" name="volume" id="volume" min="0" max="100" step="1"  data-highlight="true">
+                                </div>
+                                <button type="button" class="btn btn-primary" id="btn-volume-adjust">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/mobile/1.5.0-alpha.1/jquery.mobile-1.5.0-alpha.1.min.js"></script>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        
+        <script>
+            var serverUrl = "https://192.168.3.109";
+        </script>
+        <script src="/controlpanel/js/chatbox.js"></script>
+        <script src="/controlpanel/js/script.js"></script>
+        <script src="/controlpanel/js/action.js"></script>
+        <script src="/controlpanel/js/talk.js"></script>
+    </body>
+    
+</html>

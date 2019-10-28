@@ -10,14 +10,15 @@ import time
 import re
 import Const
 from retinaFace.src.face_detect import FaceDetect
-# from retinaFace.src.face_recognition import RecognitionModel, test_age_gender
 face_detect = FaceDetect(gpuid=0)
-# agegender = RecognitionModel(gpuid=0)
+
+from retinaFace.src.face_recognition import RecognitionModel
+agegender = RecognitionModel(gpuid=0)
 # test_age_gender()
 
 clients = []
 
-gstream = NaoGstreamer(face_detect)
+gstream = NaoGstreamer(face_detect, agegender)
 thread.start_new_thread(gstream.startPlaying, ())
 
 class NaoControlWebSocket(WebSocket):

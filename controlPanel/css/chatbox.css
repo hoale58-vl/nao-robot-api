@@ -1,0 +1,80 @@
+button {
+    padding: 15px 40px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 15px;
+    transition: all .5s ease;
+    border: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+#textarea-chatbot {
+    width: 100%;
+    height: 100px;
+    border: 1px solid green;
+}
+select {
+    padding: 15px 25px;
+}
+#hienrachotao {
+    text-align: center;
+    color: pink;
+    margin-top: 10px;
+}
+.off-marg-s {
+        margin: 0;
+        padding: 0;
+}
+#btn-listing {
+        width: 100%;
+        cursor: pointer;
+}
+.answer-bt {
+        margin-top: 50px;
+        padding: 20px 0px;
+        border-top: 1px solid red;
+        border-bottom: 1px solid red;
+
+}
+.demo-chatbox {
+        margin-top: 10px;
+        height: 300px;
+        border: 1px solid #787878;
+}
+
+#bot-send {
+        text-align: left;
+}
+
+#bot-send img {
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+}
+
+#user-send {
+        text-align: right;
+}
+.msg-box {
+        padding: 0px 30px;
+}
+.demo-chatbox {
+        overflow: scroll;
+
+}
+.msg-box p {
+        font-weight: 500;
+}
+.bg-danger {
+        border: none;
+}
+.border-slibar {
+        border-left: 1px solid #787878;
+}
+#title-demo {
+        text-align: center;
+}
+body {
+        margin: 20px;
+}

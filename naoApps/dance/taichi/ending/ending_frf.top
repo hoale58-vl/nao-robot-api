@@ -1,0 +1,6 @@
+topic: ~ending()
+language: frf
+
+u:(e:onStart) ^rand["J'espère que ma danse t'a plu !"
+                    "Haaa! ça m'a fait un bien fou cette petite danse !"
+                   ] $onStopped=1
