@@ -62,8 +62,8 @@ $("#song_lang").change(function(){
     $("#song-button .ui-selectmenu-button-text").text($("#song :selected").text());
 });
 
-var actionServerUrl = serverUrl + "/conversations/controlpanel/execute";
-var eventAppendServerUrl = serverUrl + "/conversations/controlpanel/tracker/events";
+var actionServerUrl = serverUrl + "/conversations/controlpanel/execute?agentID=deceb683-fb2d-4220-9327-2dbc169478e3";
+var eventAppendServerUrl = serverUrl + "/conversations/controlpanel/tracker/events?agentID=deceb683-fb2d-4220-9327-2dbc169478e3";
 
 function executeAction(action_name){
     var data = {

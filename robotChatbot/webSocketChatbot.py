@@ -15,12 +15,11 @@ from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 import json
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
 
 lang_code = {
 	"en": "en-US",
 	"vi": "vi-VN",
-	"ja" : "ja-JP"
 }
 
 def getLangFromConfig():
@@ -108,7 +107,7 @@ class StreamAudio(WebSocket):
 			self.observer.start()
 
 			self.connected = True
-			logging.debug(str(self.address) + ' connected')
+			logging.info(str(self.address) + ' connected')
 			self.botApi = BotApi(Const.chatbot_id)
 
 			self.recognizer = sr.CustomSpeechRecognition()

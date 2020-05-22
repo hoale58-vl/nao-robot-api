@@ -11,3 +11,4 @@ websocket_client==0.48
 cython
 scikit-image==0.15.0
 sklearn
+google-api-python-client
