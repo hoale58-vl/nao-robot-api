@@ -7,6 +7,12 @@ import _thread as thread
 import os
 from utils import gst_to_opencv
 import cv2
+import gi
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+
+gi.require_version('Gst', '1.0')
 
 font                                     = cv2.FONT_HERSHEY_SIMPLEX
 bottomLeftCornerOfText = (10,500)
@@ -55,14 +61,14 @@ class NaoGstreamer(object):
 		try:
 			ret = self.pipeline.set_state(Gst.State.PLAYING)
 			if ret == Gst.StateChangeReturn.FAILURE:
-				print("Unable to set the pipeline to the playing state.")
+				logging.error("Unable to set the pipeline to the playing state.")
 
 			self.bus = self.pipeline.get_bus()
 			self.play()
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def greetingHuman(self):
 		try:
@@ -72,7 +78,7 @@ class NaoGstreamer(object):
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def detectFaceThread(self):
 		while True:
@@ -81,7 +87,7 @@ class NaoGstreamer(object):
 					try:
 						faces, landmarks = self.face_detect.detect(self.image_arr)
 						if faces.shape[0]:
-							# print('Face detected')
+							logging.debug("Face detected")
 							if Const.SHOW_SCREEN:
 								self.image_arr = self.face_detect.draw_rect(self.image_arr, faces)
 								if self.agegender:
@@ -103,12 +109,12 @@ class NaoGstreamer(object):
 							if Const.SHOW_SCREEN:
 								cv2.imshow(namedWindow, self.image_arr)
 								cv2.waitKey(1)
-							# print('No Face')
+							logging.debug("No Face")
 							self.faceDetected = False
 					except Exception as e:
 						exc_type, exc_obj, exc_tb = sys.exc_info()
 						fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-						print(fname, exc_tb.tb_lineno, e)
+						logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def play(self):
 		self.running = False
@@ -121,7 +127,7 @@ class NaoGstreamer(object):
 					except Exception as e:
 						exc_type, exc_obj, exc_tb = sys.exc_info()
 						fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-						print(fname, exc_tb.tb_lineno, e)
+						logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 				message = self.bus.timed_pop_filtered(10000, Gst.MessageType.ANY)
 				self.handleMessage(message)
@@ -134,22 +140,22 @@ class NaoGstreamer(object):
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def handleMessage(self, message):
 		if message:
 			if message.type == Gst.MessageType.ERROR:
 				err, debug = message.parse_error()
-				print('gstreamer', '222', "Error received from element %s: %s" % (message.src.get_name(), err))
-				print("Debugging information: %s" % debug)
+				logging.error("Error received from element %s: %s" % (message.src.get_name(), err))
+				logging.debug("Debugging information: %s" % debug)
 				self.stopPlaying()
 			elif message.type == Gst.MessageType.EOS:
-				print("End-Of-Stream reached.")
+				logging.info("End-Of-Stream reached.")
 				self.stopPlaying()
 			elif message.type == Gst.MessageType.STATE_CHANGED:
 				if isinstance(message.src, Gst.Pipeline):
 					old_state, new_state, pending_state = message.parse_state_changed()
-					print("Pipeline state changed from %s to %s." % (old_state.value_nick, new_state.value_nick))
+					logging.info("Pipeline state changed from %s to %s." % (old_state.value_nick, new_state.value_nick))
 			else:
-				print("Unexpected message received.")
+				logging.info("Unexpected message received.")
 

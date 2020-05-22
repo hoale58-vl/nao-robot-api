@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Terminal=true
-Name=Click-Script
-Icon=utilities-terminal
-Exec=gnome-terminal -e "bash -c '/home/black/naoServer/startServer.sh;$SHELL'"
-Categories=Application;

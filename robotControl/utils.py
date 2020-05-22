@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import os, sys
+import logging
 
 def gst_to_opencv(sample):
 	try:
@@ -18,5 +19,5 @@ def gst_to_opencv(sample):
 	except Exception as e:
 		exc_type, exc_obj, exc_tb = sys.exc_info()
 		fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-		print(fname, exc_tb.tb_lineno, e)
+		logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 	return None

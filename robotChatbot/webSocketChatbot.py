@@ -14,6 +14,8 @@ from websocket import create_connection
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
 import json
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 lang_code = {
 	"en": "en-US",
@@ -25,7 +27,7 @@ def getLangFromConfig():
 	configFile = os.path.join(Const.configPath, "config.json")
 	with open(configFile, "r+") as jsonFile:
 		data = json.load(jsonFile)
-		print(data['lang'])
+		logging.info("Get lang from config: {}".format(data['lang']))
 		return data["lang"]
 
 class StreamAudio(WebSocket):
@@ -36,14 +38,14 @@ class StreamAudio(WebSocket):
 		try:
 			data = self.recognizer.recognize_google_cloud(audio, credentials_json=Const.GOOGLE_CLOUD_SPEECH_CREDENTIALS, language=self.configLang)
 			data = data.lower().strip()
-			print('[User] ' + data)
+			logging.debug('[User] ' + data)
 		except sr.sr.UnknownValueError as e:
 			data = "i can't hear!"
-			print('[Bot] ' + data, e)
+			logging.debug('[Bot] ' + data + " - Error:" + str(e))
 			return
 		except sr.sr.RequestError as e:
 			data = "too noisy"
-			print("Could not request results from Google Speech Recognition service; {0}".format(e))
+			logging.debug("Could not request results from Google Speech Recognition service; {0}".format(e))
 			# wsControl = create_connection(Const.WEBSOCKET_CONTROL_URL)
 			# wsControl.send("speak::::vi::::event/gstt_error.mp3")
 			# wsControl.close()
@@ -51,19 +53,19 @@ class StreamAudio(WebSocket):
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 			return
 
 		try:
 			botRes = self.botApi.askBot(data)
 			if botRes is not None:
-				print('[Bot] ' + botRes)
+				logging.debug('[Bot] ' + botRes)
 			else:
-				print('[Bot] None')
+				logging.debug('[Bot] None')
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def timerStopListening(self):
 		try:
@@ -73,12 +75,12 @@ class StreamAudio(WebSocket):
 						self.recognizer.start_speaking = False
 						self.recognizer.stop_speaking = False
 						self.recognizer.frames = collections.deque()
-						print('Stop Speaking - Timeout listening')
+						logging.debug('Stop Speaking - Timeout listening')
 				time.sleep(1)
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def handleMessage(self):
 		try:
@@ -86,13 +88,13 @@ class StreamAudio(WebSocket):
 			self.last_message_at = time.time()
 			audio = self.recognizer.listen_from_bytes(bytes(self.data), 15)
 			if self.recognizer.stop_speaking:
-				print('Stop Speaking - By voice')
+				logging.debug('Stop Speaking - By voice')
 			if audio is not None and type(audio) is not bool:
 				thread.start_new_thread( self.sttGoogleApi, (audio, ) )
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def handleConnected(self):
 		try:
@@ -106,7 +108,7 @@ class StreamAudio(WebSocket):
 			self.observer.start()
 
 			self.connected = True
-			print(str(self.address) + ' connected')
+			logging.debug(str(self.address) + ' connected')
 			self.botApi = BotApi(Const.chatbot_id)
 
 			self.recognizer = sr.CustomSpeechRecognition()
@@ -125,12 +127,11 @@ class StreamAudio(WebSocket):
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def handleClose(self):
 		self.connected = False
-		clients.remove(self.id)
-		print(str(self.address) + ' closed')
+		logging.debug(str(self.address) + ' closed')
 		self.observer.stop()
 		self.observer.join()
 

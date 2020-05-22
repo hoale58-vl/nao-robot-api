@@ -14,4 +14,4 @@ GOOGLE_JSON_FILE_PATH = 'naorobot-lvh.json'
 with open(GOOGLE_JSON_FILE_PATH, "r") as f:
     GOOGLE_CLOUD_SPEECH_CREDENTIALS = f.read()
 
-configPath = "/home/black/workSpace/nlu/rasa_projects/golf_event"
+configPath = "/home/black/naoServer"

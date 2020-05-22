@@ -14,7 +14,8 @@ face_detect = FaceDetect(gpuid=0)
 
 from retinaFace.src.face_recognition import RecognitionModel
 agegender = RecognitionModel(gpuid=0)
-# test_age_gender()
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 clients = []
 
@@ -38,21 +39,21 @@ class NaoControlWebSocket(WebSocket):
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def handleConnected(self):
 		try:
-			print(str(self.address) + ' Connected')
+			logging.info(str(self.address) + ' Connected')
 			self.clientMeta = {}
 			self.clientMeta['socket'] = self
 			clients.append(self.clientMeta)
 		except Exception as e:
 			exc_type, exc_obj, exc_tb = sys.exc_info()
 			fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-			print(fname, exc_tb.tb_lineno, e)
+			logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
 	def handleClose(self):
-		print(str(self.address) + ' Disconnected')
+		logging.info(str(self.address) + ' Disconnected')
 		clients.remove(self.clientMeta)
 		if (len(clients) == 0):
 			gstream.stopPlaying()

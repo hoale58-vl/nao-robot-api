@@ -1,13 +1,14 @@
 # Common
-pip install SimpleWebSocketServer
-# Chatbot
-pip install SpeechRecognition 
-pip install googletrans
-pip install oauth2client
+
+```
+pip install -r requirements.txt
+```
 
 # Control + Stream
+
 **Gi**
-pip install vext.gi
+
+```
 ln -s /usr/lib/python3/dist-packages/gi ~/anaconda3/envs/rasa/lib/python3.6/site-packages/
 cd ~/anaconda3/envs/rasa/lib/python3.6/site-packages/gi/
 sudo cp _gi.cpython-35m-x86_64-linux-gnu.so _gi.cpython-36m-x86_64-linux-gnu.so
@@ -15,22 +16,30 @@ sudo cp _gi_cairo.cpython-35m-x86_64-linux-gnu.so _gi_cairo.cpython-36m-x86_64-l
 sudo apt-get update -y
 *sudo apt-get install -y gir1.2-gtk-3.0*
 sudo apt-get install -y gir1.2-gst-plugins-base-1.0
+```
+
+```
+sudo yum install cairo cairo-dev gstreamer1 gstreamer1-plugins-good
+```
 
 **OpenCV**
-pip install opencv-python
-pip install opencv-contrib-python
+
+```
 sudo apt-get install libsm6 libxext6 libxrender-dev
+```
 
 **RetinaFace**
-pip install mxnet==1.4.0
-pip install numpy==1.16
-cd retinaFace/insightface/RetinaFace
-make -j8
 
-# Websocket client
-pip install websocket_client==0.48
+```
+cd retinaFace
+git clone https://github.com/deepinsight/insightface
+cd insightface/RetinaFace
+make -j8
+```
 
 # Nginx Config
+
+```
 upstream controlbot-ws {
     server 127.0.0.1:5001;
 }
@@ -70,30 +79,50 @@ server {
             proxy_read_timeout 86400;
         }
 }
+```
 
 # Test websocket
+
+```
 wscat -c wss://chatbot.ari.com.vn/webchatbot/
+```
 
 # Script startup server
+
+```
 #! /bin/bash
-cd /home/black/workSpace/nlu/gumi_project/gumi && nohup /home/black/anaconda3/envs/rasa_chatbot/bin/python -m rasa run -m models --enable-api --log-file out.log -p 5006 > log.log &
-
-cd /home/black/workSpace/nlu/gumi_project/simpleApiServer && nohup /home/black/anaconda3/envs/rasa_chatbot/bin/python apiServer.py > log.log &
-
-cd /home/black/workSpace/nlu/gumi_project/serverSource/robotControl && nohup /home/black/anaconda3/envs/rasa_chatbot/bin/python webSocketControl.py > log.log & 
-
-cd /home/black/workSpace/nlu/gumi_project/serverSource/robotChatbot && nohup /home/black/anaconda3/envs/rasa_chatbot/bin/python webSocketChatbot.py > log.log & 
+cd robotControl && nohup python webSocketControl.py > log.log & 
+cd robotChatbot && nohup python webSocketChatbot.py > log.log & 
+```
 
 # Script stop server
+
+```
 #! /bin/bash
 killall /home/black/anaconda3/envs/rasa_chatbot/bin/python
+```
 
 # Loop back audio
 ## NAO
+
+```
 pactl load-module module-rtp-send source=alsa_output.0.output-speakers.monitor destination_ip=<server_ip>
+```
+
 ## Server
+
+```
 pactl load-module module-rtp-recv sap_address=<server_ip>
+```
+
 ### List loaded module
+
+```
 pactl list short
+```
+
 ### Unload loaded module
+
+```
 pactl unload <index>
+```

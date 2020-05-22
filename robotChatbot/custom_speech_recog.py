@@ -10,6 +10,7 @@ import time
 import Const
 import numpy as np
 import sys, os
+import logging
 
 WAVE_OUTPUT = 'record/record'
 
@@ -67,7 +68,7 @@ class CustomSpeechRecognition(sr.Recognizer):
                             self.start_speaking = True
                             self.elapsed_time = 0
                             self.speaking_start_at = time.time()
-                            print('Start Speaking - ' + str(self.energy_threshold))
+                            logging.debug('Start Speaking - ' + str(self.energy_threshold))
                         elif self.energy_threshold > 300 and 1.75*energy < self.energy_threshold:
                             self.energy_threshold = 0.95 * self.energy_threshold + energy * 0.05
 
@@ -126,7 +127,7 @@ class CustomSpeechRecognition(sr.Recognizer):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(fname, exc_tb.tb_lineno, e)
+            logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))
 
     def listen_from_mic(self, source, timeout=None, phrase_time_limit=None):
         try:
@@ -148,9 +149,9 @@ class CustomSpeechRecognition(sr.Recognizer):
 
                     # detect whether speaking has started on audio input
                     energy = audioop.rms(buffer, source.SAMPLE_WIDTH)  # energy of the audio signal
-                    print("Free", energy, self.energy_threshold)
+                    logging.debug("Energy: {}, Threshold: {}".format(energy, self.energy_threshold))
                     if energy > self.energy_threshold: 
-                        print('Start speaking')
+                        logging.debug('Start speaking')
                         self.start_speaking = True
                         self.stop_speaking = False
                         break
@@ -183,7 +184,7 @@ class CustomSpeechRecognition(sr.Recognizer):
                     else:
                         pause_count += 1
                     if pause_count > self.pause_buffer_count:  # end of the phrase
-                        print('Stop speaking')
+                        logging.debug('Stop speaking')
                         self.stop_speaking = True
                         self.energy_threshold *= 3
                         break
@@ -200,4 +201,4 @@ class CustomSpeechRecognition(sr.Recognizer):
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            print(fname, exc_tb.tb_lineno, e)
+            logging.error("File: {} - Line: {} - Error: {}".format(fname, exc_tb.tb_lineno, str(e)))

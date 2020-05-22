@@ -1,0 +1,13 @@
+SimpleWebSocketServer
+SpeechRecognition
+googletrans
+oauth2client
+vext.gi
+opencv-python
+opencv-contrib-python
+mxnet-cu102
+numpy==1.16
+websocket_client==0.48
+cython
+scikit-image==0.15.0
+sklearn
