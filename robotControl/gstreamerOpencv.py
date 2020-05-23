@@ -10,7 +10,7 @@ import cv2
 import gi
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.getLogger().setLevel(logging.INFO)
 
 gi.require_version('Gst', '1.0')
 
@@ -87,7 +87,7 @@ class NaoGstreamer(object):
 					try:
 						faces, landmarks = self.face_detect.detect(self.image_arr)
 						if faces.shape[0]:
-							logging.debug("Face detected")
+							# logging.debug("Face detected")
 							if Const.SHOW_SCREEN:
 								self.image_arr = self.face_detect.draw_rect(self.image_arr, faces)
 								if self.agegender:
@@ -109,7 +109,7 @@ class NaoGstreamer(object):
 							if Const.SHOW_SCREEN:
 								cv2.imshow(namedWindow, self.image_arr)
 								cv2.waitKey(1)
-							logging.debug("No Face")
+							# logging.debug("No Face")
 							self.faceDetected = False
 					except Exception as e:
 						exc_type, exc_obj, exc_tb = sys.exc_info()

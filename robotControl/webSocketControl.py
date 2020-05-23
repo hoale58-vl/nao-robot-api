@@ -15,7 +15,7 @@ face_detect = FaceDetect(gpuid=0)
 from retinaFace.src.face_recognition import RecognitionModel
 agegender = RecognitionModel(gpuid=0)
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.getLogger().setLevel(logging.DEBUG)
 
 clients = []
 

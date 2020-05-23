@@ -4,7 +4,7 @@ import logging
 
 class BotApi:
 	def __init__(self, id_user, ip="127.0.0.1", port=80):
-		self.url = "http://{}:{}/webhooks/multilang/chat".format(ip, str(port))
+		self.url = "http://{}:{}/agent/chat?agentid={}".format(ip, str(port), "deceb683-fb2d-4220-9327-2dbc169478e3")
 		self.id_user = str(id_user)
 
 	def askBot(self, msg):

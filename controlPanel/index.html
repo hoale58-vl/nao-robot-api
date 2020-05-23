@@ -191,6 +191,8 @@
                                 <button type="button" class="btn btn-secondary col m-2 btn-mode" data-mode_action="tắt" data-mode="giọng_nói">TRACKING OFF</button>
                                 <button type="button" class="btn btn-info col m-2 btn-mode" data-mode_action="bật" data-mode="micro">MICRO ON</button>
                                 <button type="button" class="btn btn-secondary col m-2 btn-mode" data-mode_action="tắt" data-mode="micro">MICRO OFF</button>
+                                <button type="button" class="btn btn-info col m-2 btn-mode" data-mode_action="bật" data-mode="camera">STREAM ON</button>
+                                <button type="button" class="btn btn-secondary col m-2 btn-mode" data-mode_action="tắt" data-mode="camera">STREAM OFF</button>
                             </div>
                         </div>
                     </div>
@@ -224,61 +226,7 @@
             </div>
         </div>
 
-        <div id="naoconfig" data-role="page" data-prev="#naoaction" data-next="">
-            <div data-role="header" data-position='fixed' class="text-center">
-                <h1>~ Nao Conversation ~</h1>
-            </div>
-            <div data-role="content">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="demo-chatbox">
-                                <div class="msg-box">
-                                    <p id="bot-send"><img width="50" height="50" src="https://www.sccpre.cat/mypng/detail/169-1694299_this-free-icons-png-design-of-head-of.png">助けが必要ですか？</p>
-                                </div>
-                            </div>
-                            <form id="chat-with-robot">
-                                <div class="form-group">
-                                    <label for="textarea-chatbot"><b>You:</b></label>
-                                    <textarea id="textarea-chatbot"></textarea>
-                                </div>
-                                <div class="row">
-                                    <div class="col-2">
-                                        <span id="btn-listing" class="btn btn-primary"  tabindex="0"><i class="fa fa-microphone" aria-hidden="true"></i></span>
-                                    </div>
-                                    <div class="col-10">
-                                        <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane " aria-hidden="true"></i></button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <div class="col-4 border-slibar">
-                            <div class="form-group">
-                                <button type="button" class="btn btn-primary" id="btn-speechrecog">Speech Recognition</button>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="lang">Select Language</label>
-                                <select class="form-control" id="chatBoxLang">
-                                    <option value="vi">Vietnamese</option>
-                                    <option value="en">English</option>
-                                    <option value="ja">Japanese</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <div class="form-group">
-                                    <label for="volume">Adjust NAO volume</label>
-                                    <input type="range" class="form-control-range" name="volume" id="volume" min="0" max="100" step="1"  data-highlight="true">
-                                </div>
-                                <button type="button" class="btn btn-primary" id="btn-volume-adjust">Submit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
 
         <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
